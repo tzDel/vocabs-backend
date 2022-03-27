@@ -3,19 +3,9 @@ package vocabs
 import (
 	"errors"
 	"math/rand"
-	"net/http"
-
-	"github.com/gin-gonic/gin"
 )
 
-type VocabEntity struct {
-	UserID     int    `json:"userId"`
-	FirstTerm  string `json:"firstTerm"`
-	SecondTerm string `json:"secondTerm"`
-	Languages  string `json:"languages"`
-}
-
-var allVocabsOfUser = []VocabEntity{
+var AllVocabsOfUser = []VocabEntity{
 	{UserID: 1, FirstTerm: "egg", SecondTerm: "Ei", Languages: "en-de"},
 	{UserID: 1, FirstTerm: "kitchen", SecondTerm: "Küche", Languages: "en-de"},
 	{UserID: 1, FirstTerm: "language", SecondTerm: "Sprache", Languages: "en-de"},
@@ -26,22 +16,18 @@ var allVocabsOfUser = []VocabEntity{
 	{UserID: 1, FirstTerm: "cat", SecondTerm: "Katze", Languages: "en-de"},
 	{UserID: 1, FirstTerm: "", SecondTerm: "", Languages: "en-de"}}
 
-func GetAllVocabs(context *gin.Context) {
-	context.IndentedJSON(http.StatusOK, allVocabsOfUser)
-}
-
-func GetRandomVocabs(context *gin.Context) {
+func GetRandomVocabs() *[]VocabEntity {
 	outputCount := getOutputCount()
 	randomVocabs := make([]VocabEntity, outputCount)
 	uniqueRandomInts := make([]int, outputCount)
 	uniqueRandomInts[0] = randomIntBetween(1, outputCount)
 
 	for i := 0; i < outputCount; i++ {
-		randomIndex := getUniqueRandom(1, len(allVocabsOfUser), uniqueRandomInts)
-		randomVocabs[i] = allVocabsOfUser[randomIndex]
+		randomIndex := getUniqueRandom(1, len(AllVocabsOfUser), uniqueRandomInts)
+		randomVocabs[i] = AllVocabsOfUser[randomIndex]
 		uniqueRandomInts[i] = randomIndex
 	}
-	context.IndentedJSON(http.StatusOK, randomVocabs)
+	return &randomVocabs
 }
 
 func getUniqueRandom(min int, max int, uniqueRandoms []int) int {
@@ -62,16 +48,16 @@ func isUnique(random int, randoms []int) bool {
 }
 
 func getVocabByUserId(id int) (*VocabEntity, error) {
-	for i, vocab := range allVocabsOfUser {
+	for i, vocab := range AllVocabsOfUser {
 		if vocab.UserID == id {
-			return &allVocabsOfUser[i], nil
+			return &AllVocabsOfUser[i], nil
 		}
 	}
 	return nil, errors.New("")
 }
 
 func getOutputCount() int {
-	totalCountOfVocabs := len(allVocabsOfUser)
+	totalCountOfVocabs := len(AllVocabsOfUser)
 	if totalCountOfVocabs < 5 {
 		return totalCountOfVocabs
 	}

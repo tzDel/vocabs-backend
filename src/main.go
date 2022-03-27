@@ -1,7 +1,7 @@
 package main
 
 import (
-	v "vocabs-backend/rest-api/vocabs"
+	"vocabs-backend/src/vocabs"
 
 	"github.com/gin-gonic/gin"
 )
@@ -12,7 +12,7 @@ func main() {
 
 func runApi() {
 	router := gin.Default()
-	router.GET("/vocabs", v.GetAllVocabs)
-	router.GET("/random", v.GetRandomVocabs)
+	router.GET("/vocabs", vocabs.GetAll)
+	router.GET("/random", vocabs.GetRandom)
 	router.Run("localhost:8080")
 }
