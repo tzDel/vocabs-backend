@@ -11,6 +11,6 @@ func RunApi() {
 	router.POST("/vocabs", controller.AddVocab)
 	router.DELETE("/myvocabs/:term", controller.DeleteVocabByTerm)
 	router.GET("/myvocabs", controller.GetVocabsByUserID)
-	router.GET("/myvocabs/random", controller.GetRandomVocabsForUser)
+	// router.GET("/myvocabs/random", controller.GetRandomVocabsForUser)
 	router.Run("localhost:8080")
 }

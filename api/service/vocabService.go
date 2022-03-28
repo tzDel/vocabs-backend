@@ -5,8 +5,6 @@ import (
 	"math/rand"
 	"vocabs-backend/api/database"
 	"vocabs-backend/api/model"
-
-	"gorm.io/gorm"
 )
 
 var AllVocabsOfUser = []model.Vocab{
@@ -28,12 +26,15 @@ func DeleteVocabBy(term string) error {
 	return database.DeleteVocabBy(term)
 }
 
-func GetVocabsBy(userID string) (*[]model.Vocab, error) {
-	return database.GetAllByUserId(userID)
+func GetVocabsBy(userID string) ([]model.Vocab, error) {
+	return database.GetAllBy(userID)
 }
 
-func GetRandomVocabs(db *gorm.DB) *[]model.Vocab {
-	outputCount := getOutputCount()
+func GetRandomVocabsFor(userID string) ([]model.Vocab, error) {
+	outputCount, err := getOutputCountFor(userID)
+	if err != nil {
+		return nil, err
+	}
 	randomVocabs := make([]model.Vocab, outputCount)
 	uniqueRandomInts := make([]int, outputCount)
 	uniqueRandomInts[0] = randomIntBetween(1, outputCount)
@@ -43,7 +44,7 @@ func GetRandomVocabs(db *gorm.DB) *[]model.Vocab {
 		randomVocabs[i] = AllVocabsOfUser[randomIndex]
 		uniqueRandomInts[i] = randomIndex
 	}
-	return &randomVocabs
+	return randomVocabs
 }
 
 func getUniqueRandom(min int, max int, uniqueRandoms []int) int {
@@ -72,12 +73,18 @@ func getVocabByUserId(id int) (*model.Vocab, error) {
 	return nil, errors.New("")
 }
 
-func getOutputCount() int {
-	totalCountOfVocabs := len(AllVocabsOfUser)
-	if totalCountOfVocabs < 5 {
-		return totalCountOfVocabs
+func getOutputCountFor(userID string) (int, error) {
+	outputCount := 5
+	vocabsOfUser, err := database.GetAllBy(userID)
+	if err != nil {
+		outputCount = 0
 	}
-	return 5
+
+	totalCountOfVocabs := len(vocabsOfUser)
+	if totalCountOfVocabs < outputCount {
+		outputCount = totalCountOfVocabs
+	}
+	return outputCount, err
 }
 
 func randomIntBetween(min int, max int) int {
