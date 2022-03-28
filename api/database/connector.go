@@ -1,10 +1,10 @@
-package commons
+package database
 
 import (
 	"fmt"
 	"log"
 	"os"
-	"vocabs-backend/src/vocabs"
+	"vocabs-backend/api/model"
 
 	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
@@ -14,12 +14,16 @@ import (
 var db *gorm.DB
 var err error
 
-func MigrateDatabase() {
-	db.AutoMigrate(&vocabs.VocabEntity{})
+func GetDatabase() *gorm.DB {
+	return db
+}
+
+func Migrate() {
+	db.AutoMigrate(&model.Vocab{})
 	// db.AutoMigrate(&UserEntity{})
 }
 
-func CloseDatabase() {
+func CloseConnection() {
 	sqlDB, err := db.DB()
 	if err != nil {
 		log.Fatal(err)
@@ -27,10 +31,10 @@ func CloseDatabase() {
 	sqlDB.Close()
 }
 
-func InitDatabaseConnection() {
+func InitConnection() *gorm.DB {
 	loadEnvFile()
 	dialect := os.Getenv("DIALECT")
-	connectToDatabase(dialect, buildDSN())
+	return connectToDatabase(dialect, buildDSN())
 }
 
 func loadEnvFile() {
@@ -50,7 +54,7 @@ func buildDSN() string {
 		os.Getenv("DBPORT"))
 }
 
-func connectToDatabase(dialect string, dsn string) {
+func connectToDatabase(dialect string, dsn string) *gorm.DB {
 	pgDialector := buildPostgresDialector(dsn)
 	db, err = gorm.Open(pgDialector, &gorm.Config{})
 	if err != nil {
@@ -58,6 +62,7 @@ func connectToDatabase(dialect string, dsn string) {
 	} else {
 		fmt.Println("Database connection established")
 	}
+	return db
 }
 
 func buildPostgresDialector(dsn string) gorm.Dialector {

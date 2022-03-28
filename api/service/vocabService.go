@@ -1,11 +1,15 @@
-package vocabs
+package service
 
 import (
 	"errors"
 	"math/rand"
+	"vocabs-backend/api/database"
+	"vocabs-backend/api/model"
+
+	"gorm.io/gorm"
 )
 
-var AllVocabsOfUser = []VocabEntity{
+var AllVocabsOfUser = []model.Vocab{
 	{UserID: 1, FirstTerm: "egg", SecondTerm: "Ei", Languages: "en-de"},
 	{UserID: 1, FirstTerm: "kitchen", SecondTerm: "Küche", Languages: "en-de"},
 	{UserID: 1, FirstTerm: "language", SecondTerm: "Sprache", Languages: "en-de"},
@@ -16,9 +20,13 @@ var AllVocabsOfUser = []VocabEntity{
 	{UserID: 1, FirstTerm: "cat", SecondTerm: "Katze", Languages: "en-de"},
 	{UserID: 1, FirstTerm: "", SecondTerm: "", Languages: "en-de"}}
 
-func GetRandomVocabs() *[]VocabEntity {
+func GetVocabsBy(userID string) (*[]model.Vocab, error) {
+	return database.GetAllByUserId(userID)
+}
+
+func GetRandomVocabs(db *gorm.DB) *[]model.Vocab {
 	outputCount := getOutputCount()
-	randomVocabs := make([]VocabEntity, outputCount)
+	randomVocabs := make([]model.Vocab, outputCount)
 	uniqueRandomInts := make([]int, outputCount)
 	uniqueRandomInts[0] = randomIntBetween(1, outputCount)
 
@@ -47,7 +55,7 @@ func isUnique(random int, randoms []int) bool {
 	return true
 }
 
-func getVocabByUserId(id int) (*VocabEntity, error) {
+func getVocabByUserId(id int) (*model.Vocab, error) {
 	for i, vocab := range AllVocabsOfUser {
 		if vocab.UserID == id {
 			return &AllVocabsOfUser[i], nil
