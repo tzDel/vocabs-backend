@@ -14,8 +14,18 @@ func AddVocab(c *gin.Context) {
 	}
 	if err := service.AddVocab(requestBody); err != nil {
 		c.AbortWithError(500, err)
+	} else {
+		c.JSON(201, requestBody)
 	}
-	c.JSON(201, requestBody)
+}
+
+func DeleteVocabByTerm(c *gin.Context) {
+	term := c.Params.ByName("term")
+	if err := service.DeleteVocabBy(term); err != nil {
+		c.AbortWithError(500, err)
+	} else {
+		c.JSON(200, gin.H{"data": true})
+	}
 }
 
 func GetVocabsByUserID(c *gin.Context) {

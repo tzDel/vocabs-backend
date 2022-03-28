@@ -24,6 +24,10 @@ func AddVocab(toBeCreated model.Vocab) error {
 	return database.AddVocab(toBeCreated)
 }
 
+func DeleteVocabBy(term string) error {
+	return database.DeleteVocabBy(term)
+}
+
 func GetVocabsBy(userID string) (*[]model.Vocab, error) {
 	return database.GetAllByUserId(userID)
 }
