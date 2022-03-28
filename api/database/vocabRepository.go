@@ -2,7 +2,9 @@ package database
 
 import "vocabs-backend/api/model"
 
-func AddVocab(vocab *model.Vocab) {
+func AddVocab(toBeCreated model.Vocab) error {
+	db := GetDatabase()
+	return db.Create(toBeCreated).Error
 }
 
 func GetAllByUserId(userID string) (*[]model.Vocab, error) {

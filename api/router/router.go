@@ -8,6 +8,7 @@ import (
 
 func RunApi() {
 	router := gin.Default()
+	router.POST("/vocabs", controller.AddVocab)
 	router.GET("/myvocabs", controller.GetVocabsByUserID)
 	router.GET("/myvocabs/random", controller.GetRandomVocabsForUser)
 	router.Run("localhost:8080")

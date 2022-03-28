@@ -1,8 +1,8 @@
 package model
 
 type Vocab struct {
-	UserID     int    `json:"userId"`
-	FirstTerm  string `json:"firstTerm"`
-	SecondTerm string `json:"secondTerm"`
+	UserID     int    `json:"user_id"`
+	FirstTerm  string `json:"firstterm"`
+	SecondTerm string `json:"secondterm"`
 	Languages  string `json:"languages"`
 }

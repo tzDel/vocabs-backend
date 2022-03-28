@@ -20,6 +20,10 @@ var AllVocabsOfUser = []model.Vocab{
 	{UserID: 1, FirstTerm: "cat", SecondTerm: "Katze", Languages: "en-de"},
 	{UserID: 1, FirstTerm: "", SecondTerm: "", Languages: "en-de"}}
 
+func AddVocab(toBeCreated model.Vocab) error {
+	return database.AddVocab(toBeCreated)
+}
+
 func GetVocabsBy(userID string) (*[]model.Vocab, error) {
 	return database.GetAllByUserId(userID)
 }
